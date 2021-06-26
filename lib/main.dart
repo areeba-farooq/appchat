@@ -1,11 +1,20 @@
 import 'package:appchat/screens/chat_screen.dart';
+import 'package:appchat/screens/friend_list_page.dart';
 import 'package:appchat/screens/home_screen.dart';
 import 'package:appchat/screens/login_screen.dart';
+import 'package:appchat/screens/messages_screen.dart';
 import 'package:appchat/screens/signup_screen.dart';
 import 'package:appchat/screens/welcome_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(AppChat());
+import 'models/msg_model.dart';
+
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(AppChat());}
 
 class AppChat extends StatelessWidget {
 
@@ -23,8 +32,10 @@ class AppChat extends StatelessWidget {
         LoginPage.id: (context) => LoginPage(),
         Signup.id: (context) => Signup(),
         HomePage.id: (context) => HomePage(),
-        ChatPage.id: (context) => ChatPage(),
-      },
+        // ChatPage.id: (context) => ChatPage(user: chats[index].sender,),
+        MsgPage.id: (context) => MsgPage(),
+        FriendList.id: (context) => FriendList(),
+      }
     );
   }
 }

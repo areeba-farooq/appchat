@@ -1,14 +1,24 @@
 import 'package:appchat/constants.dart';
-import 'package:appchat/screens/chat_screen.dart';
+import 'package:appchat/screens/friend_list_page.dart';
+import 'package:appchat/screens/messages_screen.dart';
 import 'package:appchat/screens/welcome_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class buildDrawer extends StatelessWidget {
+// ignore: camel_case_types
+class buildDrawer extends StatefulWidget {
   const buildDrawer({
     Key? key,
   }) : super(key: key);
 
+  @override
+  _buildDrawerState createState() => _buildDrawerState();
+}
+
+// ignore: camel_case_types
+class _buildDrawerState extends State<buildDrawer> {
+  final _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -32,13 +42,24 @@ class buildDrawer extends StatelessWidget {
               )
           ),
           DrawerItems(title: 'Profile', onTap: (){}, icon: Icons.person,),
-          DrawerItems(title: 'Friends', onTap: (){}, icon: FontAwesomeIcons.userFriends,),
-          DrawerItems(title: 'Chats', onTap: (){ Navigator.pushNamed(context, ChatPage.id);}, icon: Icons.message,),
+          DrawerItems(title: 'Friends', onTap: (){
+            Navigator.pushNamed(context, FriendList.id);
+          }, icon: FontAwesomeIcons.userFriends,),
+          DrawerItems(title: 'Messages', onTap: (){
+            Navigator.pushNamed(context, MsgPage.id);
+          }, icon: Icons.message,),
           DrawerItems(title: 'Request', onTap: (){}, icon: FontAwesomeIcons.userPlus,),
           DrawerItems(title: 'Block List', onTap: (){}, icon: Icons.block,),
           DrawerItems(title: 'Settings', onTap: (){}, icon: Icons.settings,),
           DrawerItems(title: 'About', onTap: (){}, icon: FontAwesomeIcons.question,),
-          DrawerItems(title: 'Logout', onTap: (){ Navigator.pushNamed(context, WelcomePage.id);}, icon: FontAwesomeIcons.signOutAlt,),
+          DrawerItems(title: 'Logout',
+            onTap: (){
+            _auth.signOut();
+            Navigator.pushReplacement(context, MaterialPageRoute(builder:
+                (context) => WelcomePage()));
+            },
+
+            icon: FontAwesomeIcons.signOutAlt,),
         ],
       ),
 

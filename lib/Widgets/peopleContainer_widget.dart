@@ -35,7 +35,9 @@ class PeoplesContainer extends StatelessWidget {
                           side: BorderSide.none,
                         ),
                         color: Theme.of(context).primaryColor,
-                        onPressed: () {},
+                        onPressed: () {
+                          print('buhhh');
+                          },
                         // TODO: Icon not centered.
                         child: Center(
                           child: Icon(Icons.add,

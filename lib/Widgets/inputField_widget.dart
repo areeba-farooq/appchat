@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 
 class InputField extends StatelessWidget {
-  InputField({required this.border, required this.title,required this.onChange});
+  InputField({required this.border, required this.title,required this.onChange, required this.obsecure, this.textInputType});
 
   final OutlineInputBorder border;
   final onChange;
   final String title;
+  final bool obsecure;
+  final textInputType;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 20.0, right: 20.0),
       child: TextFormField(
+        textAlign: TextAlign.center,
+        obscureText: obsecure,
+        keyboardType: textInputType,
         textCapitalization: TextCapitalization.sentences,
         onChanged: onChange,
         decoration: InputDecoration(

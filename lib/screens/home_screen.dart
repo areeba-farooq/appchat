@@ -1,7 +1,12 @@
 import 'package:appchat/Widgets/drawerItems_widget.dart';
 import 'package:appchat/Widgets/peopleContainer_widget.dart';
+import 'package:appchat/models/msg_model.dart';
 import 'package:appchat/models/onlinePeoples_mmodel.dart';
+import 'package:appchat/screens/messages_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'chat_screen.dart';
 
 class HomePage extends StatefulWidget {
 static String id = 'home_page';
@@ -10,6 +15,32 @@ static String id = 'home_page';
 }
 
 class _HomePageState extends State<HomePage> {
+  final _auth = FirebaseAuth.instance;
+  late User loggedInUser;
+
+
+
+@override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+
+  void getCurrentUser() async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        loggedInUser = user;
+        print(loggedInUser.email);
+
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,11 +49,21 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Theme.of(context).primaryColor,
         title: Text('Home', style: TextStyle(
           color: Colors.white,
-          fontFamily: 'Dancing Script',
-          fontSize: 30.0,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 2.0
+          fontFamily: 'Source Sans Pro',
+          fontSize: 25.0,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 1.0
         ),),
+        actions: [
+          IconButton(
+              onPressed: (){
+                Navigator.pushNamed(context, MsgPage.id);
+              },
+              icon: Icon(Icons.message, color: Colors.white,)),
+          IconButton(
+              onPressed: (){},
+              icon: Icon(Icons.search, color: Colors.white,))
+        ],
       ),
       drawer: buildDrawer(),
       body: SingleChildScrollView(
@@ -45,13 +86,14 @@ class _HomePageState extends State<HomePage> {
               ),),
             ),
       Container(
-        height: 400,
+        height: 460,
         child: ListView.builder(
             itemCount: onlinepeoples.length,
             itemBuilder: (context, index){
               return GestureDetector(
                 onTap: (){
-                  print('open chat');
+                 Navigator.push(context, MaterialPageRoute(builder:
+                     (context) => ChatPage(user: chats[index].sender,)));
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(6.0),
@@ -85,6 +127,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
 
 
 
