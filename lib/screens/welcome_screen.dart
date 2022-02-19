@@ -64,11 +64,13 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Hero(
-              tag: 'logo',
-              child: Container(
-                height: 200,
-                child: Image.asset('images/appchat.png'),
+            Flexible(
+              child: Hero(
+                tag: 'logo',
+                child: Container(
+                  height: 200,
+                  child: Image.asset('images/appchat.png'),
+                ),
               ),
             ),
 
