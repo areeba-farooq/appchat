@@ -58,6 +58,7 @@ class _ChatPageState extends State<ChatPage> {
         .add({
           'text': mesgText,
           'sender': loggedInUser?.email,
+      'Timestamp': FieldValue.serverTimestamp()
         })
         .then((value) => print('msg added $value'))
         .catchError((e) => print('Failed to send messages $e'));
@@ -155,7 +156,7 @@ class MyMsgsStream extends StatelessWidget {
 
         ///list of documents >> querysnapshots
         StreamBuilder<QuerySnapshot>(
-            stream: addMsgs.snapshots(),
+            stream: addMsgs.orderBy('Timestamp').snapshots(),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
                 return Center(
@@ -170,7 +171,7 @@ class MyMsgsStream extends StatelessWidget {
               }
               if (snapshot.hasData) {
                 List<MesgBubble> msgList = [];
-                snapshot.data?.docs.map((doc) {
+                snapshot.data?.docs.reversed.map((doc) {
                   final msgText = (doc.data() as Map)['text'];
 
                   ///got the user who send msgs
@@ -191,6 +192,7 @@ class MyMsgsStream extends StatelessWidget {
                 }).toList();
                 return Expanded(
                   child: ListView(
+                     reverse: true,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10.0, vertical: 20.0),
                     children: msgList,
