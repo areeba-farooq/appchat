@@ -37,7 +37,7 @@ class FavContacts extends StatelessWidget {
                   return GestureDetector(
                     onTap: () => Navigator.push(context,
                       MaterialPageRoute(builder: (context)=> ChatPage(
-                        user: favs[i],),
+                      ),
                       ),),
                     child: Padding(
                       padding: EdgeInsets.all(10.0),

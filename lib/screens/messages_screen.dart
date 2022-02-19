@@ -39,6 +39,7 @@ class _MsgPageState extends State<MsgPage> {
           children: [
             FavContacts(),
             RecentChats(),
+
           ],
         ),
     );

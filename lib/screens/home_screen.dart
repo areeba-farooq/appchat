@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> {
               return GestureDetector(
                 onTap: (){
                  Navigator.push(context, MaterialPageRoute(builder:
-                     (context) => ChatPage(user: chats[index].sender,)));
+                     (context) => ChatPage()));
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(6.0),

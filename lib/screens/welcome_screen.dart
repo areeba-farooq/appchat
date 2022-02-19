@@ -10,26 +10,43 @@ class WelcomePage extends StatefulWidget {
   @override
   _WelcomePageState createState() => _WelcomePageState();
 }
+//ticker provider our state object
+//act as a ticker for a single animation
 class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStateMixin{
+  //Mixin enable your class with different types of capabilities
+  //Mixins are the way to reusing class code in multiple hierarchies
   late AnimationController controller;
   late Animation animation;
 
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(duration: Duration(seconds: 1),
-    vsync: this,
+    controller = AnimationController(duration: Duration(seconds: 3),
+    vsync: this, //act as a ticker for our animation
+      ///if we have curved Animation we cannot have upperbound value greater than 1
+      // upperBound: 100.0
     );
 
-    animation = ColorTween(begin:Colors.blueGrey, end: Colors.white).animate(controller);
+    // animation = CurvedAnimation(parent: controller, curve: Curves.decelerate);
+     animation = ColorTween(begin:Colors.blueGrey, end: Colors.white).animate(controller);
 
 
 
+///in 1 seconds we might get 60 ticks on our Ticker
+    controller.forward(); ///precede our animation to forward
 
-    controller.forward();
-    controller.addListener(() {
+
+    ///we can detect when the animation is completed
+    // animation.addStatusListener((status) {
+    //   if(status == AnimationStatus.completed){
+    //     controller.reverse(from: 1.0);
+    //   } else if(status == AnimationStatus.dismissed){
+    //     controller.forward();
+    //   }
+    // });
+    controller.addListener(() {/// we can listen the values on the controller
       setState(() {});
-
+      // print(controller.value);
     });
   }
 
@@ -50,14 +67,15 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
             Hero(
               tag: 'logo',
               child: Container(
-                height: 200.0,
+                height: 200,
                 child: Image.asset('images/appchat.png'),
               ),
             ),
+
             AnimatedTextKit(
               animatedTexts: [
                 TyperAnimatedText('App Chat',
-                  speed: Duration(milliseconds: 100),
+                  speed: Duration(milliseconds: 200),
                   textStyle: TextStyle(
                   fontSize: 70.0,
                   color: Theme.of(context).accentColor,
@@ -67,6 +85,7 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
               ),
                 )]
               ),
+
             SizedBox(height: 40.0,),
             Buttons(title: 'Login', onPress: (){Navigator.pushNamed(context, LoginPage.id);},
               color: Theme.of(context).primaryColor, style:  kWelcomeButtons,),

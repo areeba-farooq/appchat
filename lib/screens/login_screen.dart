@@ -9,6 +9,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
+import 'chat_screen.dart';
+
 class LoginPage extends StatefulWidget {
 static String id = 'login_page';
   @override

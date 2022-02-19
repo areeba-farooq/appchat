@@ -32,7 +32,7 @@ class AppChat extends StatelessWidget {
         LoginPage.id: (context) => LoginPage(),
         Signup.id: (context) => Signup(),
         HomePage.id: (context) => HomePage(),
-        // ChatPage.id: (context) => ChatPage(user: chats[index].sender,),
+         ChatPage.id: (context) => ChatPage(),
         MsgPage.id: (context) => MsgPage(),
         FriendList.id: (context) => FriendList(),
       }

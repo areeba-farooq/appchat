@@ -29,7 +29,7 @@ class RecentChats extends StatelessWidget {
                 return GestureDetector(
                   onTap: () => Navigator.push(context,
                     MaterialPageRoute(builder: (context)=> ChatPage(
-                      user: chats[index].sender,),
+                    ),
                     ),),
                   child: Container(
                     margin: EdgeInsets.only(top: 5.0, left: 5.0, right: 20.0),
