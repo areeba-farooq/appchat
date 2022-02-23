@@ -2,7 +2,10 @@ import 'package:appchat/Widgets/drawerItems_widget.dart';
 import 'package:appchat/Widgets/peopleContainer_widget.dart';
 import 'package:appchat/models/msg_model.dart';
 import 'package:appchat/models/onlinePeoples_mmodel.dart';
+import 'package:appchat/screens/login_screen.dart';
 import 'package:appchat/screens/messages_screen.dart';
+import 'package:appchat/screens/search_screen.dart';
+import 'package:appchat/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +20,7 @@ static String id = 'home_page';
 class _HomePageState extends State<HomePage> {
   final _auth = FirebaseAuth.instance;
   late User loggedInUser;
+  AuthMethod authMethod = AuthMethod();
 
 
 
@@ -47,82 +51,48 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        title: Text('Home', style: TextStyle(
-          color: Colors.white,
-          fontFamily: 'Source Sans Pro',
-          fontSize: 25.0,
-          fontWeight: FontWeight.w400,
-          letterSpacing: 1.0
-        ),),
+        title: Row(
+          children: [
+            CircleAvatar(
+                radius: 20,
+                backgroundColor: Colors.white,
+                backgroundImage: AssetImage("images/appchat.png",)),
+            SizedBox(width: 20,),
+            Text('AppChat', style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Dancing Script',
+                fontSize: 28.0,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 1.0
+            ),),
+          ],
+        ),
         actions: [
           IconButton(
               onPressed: (){
-                Navigator.pushNamed(context, MsgPage.id);
+                authMethod.signOut();
+                Navigator.pushReplacementNamed(context, LoginPage.id);
               },
-              icon: Icon(Icons.message, color: Colors.white,)),
+              icon: Icon(Icons.logout, color: Colors.white,)),
           IconButton(
-              onPressed: (){},
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> const SearchPage()));
+              },
               icon: Icon(Icons.search, color: Colors.white,))
         ],
       ),
-      drawer: buildDrawer(),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Text('PEOPLE YOU MAY KNOW : ', style: TextStyle(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: Text( "You Don't have any friends yet", style: TextStyle(
                 color: Colors.black54,
-                fontSize: 16.0
-              ),),
-            ),
-            PeoplesContainer(),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text('ACTIVE PEOPLES : ', style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 16.0
-              ),),
-            ),
-      Container(
-        height: 460,
-        child: ListView.builder(
-            itemCount: onlinepeoples.length,
-            itemBuilder: (context, index){
-              return GestureDetector(
-                onTap: (){
-                 Navigator.push(context, MaterialPageRoute(builder:
-                     (context) => ChatPage()));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: ListTile(
-                      leading: CircleAvatar(
-                        radius: 30.0,
-                        backgroundImage: AssetImage(onlinepeoples[index].avatar),
-                        backgroundColor: Colors.red,
-                      ),
-                    title: Text(onlinepeoples[index].name),
-                    subtitle: Text('Active Now'),
-                    trailing: Container(
-                      height: 10,
-                      width: 10,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30.0),
-                        color: Colors.green
-                      ),
-                    )
+                fontSize: 20.0
+            ),),
+          ),
 
-                    ),
-                )
-
-        );
-        }),
-    )
-
-          ],
-        ),
+        ],
       ),
     );
   }

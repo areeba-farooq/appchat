@@ -1,15 +1,12 @@
 import 'package:appchat/Widgets/bottomText_widget.dart';
 import 'package:appchat/Widgets/button_widget.dart';
-import 'package:appchat/Widgets/inputField_widget.dart';
-import 'package:appchat/screens/chat_screen.dart';
-import 'package:appchat/screens/home_screen.dart';
 import 'package:appchat/screens/login_screen.dart';
+import 'package:appchat/services/auth.dart';
+import 'package:appchat/services/database.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../constants.dart';
+import 'home_screen.dart';
 
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class Signup extends StatefulWidget {
   static String id = 'signup';
@@ -23,24 +20,60 @@ class _SignupState extends State<Signup> {
   late String email;
   late String password;
   bool showSpinner = false;
+  final formKey = GlobalKey<FormState>();
+  final TextEditingController userNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
-  //private property
-  final _auth = FirebaseAuth.instance;
+  AuthMethod authMethod = AuthMethod(); ///object
+  DatabaseMethods databaseMethods = DatabaseMethods();
+  signMeUp(){
+    if(formKey.currentState!.validate()){
+      setState(() {
+        showSpinner = true;
+      });
+      ///registering a user to firebase auth
+      authMethod.registration(emailController.text, passwordController.text)
+          .then((value) => print(value));
 
-  // static instance of firebaseAuth class.
+      ///creating map for userinfo to store on firebase storage
+      Map<String, String> userInfoMap = {
+        "name": userNameController.text,
+        "email": emailController.text,
+      };
+
+      ///sending userinfo to the firebase storage
+      databaseMethods.uploadUserInfo(userInfoMap); ///accepts a Map
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          backgroundColor: Color(0xFF2A6971),
+          content: Text('Registered Successfully! Kindly Login.',
+            style: TextStyle(color: Colors.white, fontSize: 18),)));
+      Navigator.pushNamed(context, HomePage.id);
+    }
+  }
 
   final OutlineInputBorder border = OutlineInputBorder(
     borderSide: BorderSide(color: Colors.lightBlueAccent, width: 1.0),
     borderRadius: BorderRadius.all(Radius.circular(32.0)),
   );
+  @override
+  void dispose() {
+    super.dispose();
+    //clean up the controller when the widget is disposed.
+    emailController.dispose();
+    passwordController.dispose();
+    userNameController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        child: SingleChildScrollView(
+      body: showSpinner ? Container(
+        child: Center(child: CircularProgressIndicator(),),
+      ): SingleChildScrollView(
+        child: Form(
+          key: formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -55,36 +88,91 @@ class _SignupState extends State<Signup> {
               SizedBox(
                 height: 40.0,
               ),
-              InputField(
-                border: border,
-                title: 'Enter User Name',
-                onChange: (value) {
-                  username = value;
-                },
-                obsecure: false,
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                child: TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter username';
+                    } else {
+                      return null;
+                    }
+                  },
+                  controller: userNameController,
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.name,
+                  textCapitalization: TextCapitalization.sentences,
+                  decoration: InputDecoration(
+                    hintText: "Enter UserName",
+                    contentPadding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0)
+                    ),
+                    enabledBorder: border,
+                    focusedBorder: border,
+                  ),
+                ),
               ),
               SizedBox(
                 height: 20.0,
               ),
-              InputField(
-                border: border,
-                title: 'Enter your Email',
-                onChange: (value) {
-                  email = value;
-                },
-                obsecure: false,
-                textInputType: TextInputType.emailAddress,
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                child: TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter email address';
+                    } else if (!value.contains('@')) {
+                      return 'Please enter Valid Email Address';
+                    } else {
+                      return null;
+                    }
+                  },
+                  controller: emailController,
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.emailAddress,
+                  textCapitalization: TextCapitalization.sentences,
+                  decoration: InputDecoration(
+                    hintText: "Enter email address",
+                    contentPadding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0)
+                    ),
+                    enabledBorder: border,
+                    focusedBorder: border,
+                  ),
+                ),
               ),
               SizedBox(
                 height: 20.0,
               ),
-              InputField(
-                border: border,
-                title: 'Enter your password',
-                onChange: (value) {
-                  password = value;
-                },
-                obsecure: true,
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                child: TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter password';
+                    } else if (value.length <= 8) {
+                      return 'Password should be 8 characters long';
+                    } else {
+                      return null;
+                    }
+                  },
+                  controller: passwordController,
+                  obscureText: true,
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.visiblePassword,
+                  textCapitalization: TextCapitalization.sentences,
+                  decoration: InputDecoration(
+                    hintText: "Enter password",
+                    contentPadding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0)
+                    ),
+                    enabledBorder: border,
+                    focusedBorder: border,
+                  ),
+                ),
               ),
               SizedBox(
                 height: 24.0,
@@ -95,29 +183,13 @@ class _SignupState extends State<Signup> {
                     color: Theme.of(context).primaryColor,
                     title: 'SignUp',
                     style: kLoginSignup,
-                    onPress: () async {
-                      setState(() {
-                        showSpinner = true;
-                      });
+                    onPress: () {
+                      signMeUp();
+    }
 
-                      try {
-                        final newUser =
-                            await _auth.createUserWithEmailAndPassword(
-                                email: email, password: password);
-                        if (newUser != null) {
-                          Navigator.pushNamed(context, ChatPage.id);
-                        }
-                        setState(() {
-                          showSpinner = false;
-                        });
-                      } catch (e) {
-                        print(e);
-                      }
-                    }),
+                    ),
               ),
-              SizedBox(
-                height: 30.0,
-              ),
+
               BottomText(
                   title: 'Already have an account?',
                   onPress: () {
