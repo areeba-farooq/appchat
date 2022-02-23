@@ -27,7 +27,7 @@ class AppChat extends StatelessWidget {
         accentColor: Color(0xFF2A6971)
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: SearchPage.id,
+      initialRoute: HomePage.id,
       routes: {
         WelcomePage.id: (context) => WelcomePage(),
         LoginPage.id: (context) => LoginPage(),

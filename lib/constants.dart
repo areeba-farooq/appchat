@@ -33,3 +33,7 @@ const kDrawerTagLine = TextStyle(
     fontFamily: 'Source Sans Pro',
     letterSpacing: 2.0
 );
+
+class Constants {
+  static String myName = "";
+}

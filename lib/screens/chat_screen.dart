@@ -1,4 +1,6 @@
+import 'package:appchat/constants.dart';
 import 'package:appchat/models/onlinePeoples_mmodel.dart';
+import 'package:appchat/services/helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,52 +19,9 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  final _auth = FirebaseAuth.instance;
-  late String mesgText;
   TextEditingController _editingController = TextEditingController();
 
-  //check to see if current user signed in
-  void getCurrentUser() async {
-    try {
-      final user = _auth.currentUser;
-      if (user != null) {
-        loggedInUser = user;
-        print(loggedInUser?.email);
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
 
-  //get msgs from firebase database
-  // void getMsg() async{
-  //   final msgs = await
-  //   addMsgs.get();
-  //   for (var msg in msgs.docs){
-  //     print(msg.data());
-  //   }
-  // }
-
-  ///getting msgs to firebase database and it will notify when there is a change or new msgs through stream snapshots
-  // Future msgStream() async{
-  //    await for(var snapshot in addMsgs.snapshots()){
-  //      for (var msg in snapshot.docs){
-  //             print(msg.data());
-  //          }
-  //    }
-  // }
-
-  ///add msgs to the firebase database
-  Future addUserMesg() {
-    return addMsgs
-        .add({
-          'text': mesgText,
-          'sender': loggedInUser?.email,
-      'Timestamp': FieldValue.serverTimestamp()
-        })
-        .then((value) => print('msg added $value'))
-        .catchError((e) => print('Failed to send messages $e'));
-  }
 
   clearText() {
     _editingController.clear();
@@ -71,7 +30,6 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    getCurrentUser();
   }
 
   @override
@@ -117,9 +75,9 @@ class _ChatPageState extends State<ChatPage> {
                   Expanded(
                       child: TextField(
                     controller: _editingController,
-                    onChanged: (value) {
-                      mesgText = value;
-                    },
+                    // onChanged: (value) {
+                    //   mesgText = value;
+                    // },
                     textCapitalization: TextCapitalization.sentences,
                     decoration: InputDecoration.collapsed(
                         hintText: 'Type a message...',
@@ -131,7 +89,6 @@ class _ChatPageState extends State<ChatPage> {
                   IconButton(
                     onPressed: () {
                       setState(() {
-                        addUserMesg();
                         clearText();
                       });
                     },

@@ -3,6 +3,7 @@ import 'package:appchat/Widgets/button_widget.dart';
 import 'package:appchat/screens/login_screen.dart';
 import 'package:appchat/services/auth.dart';
 import 'package:appchat/services/database.dart';
+import 'package:appchat/services/helper.dart';
 import 'package:flutter/material.dart';
 import '../constants.dart';
 import 'home_screen.dart';
@@ -24,7 +25,6 @@ class _SignupState extends State<Signup> {
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
   AuthMethod authMethod = AuthMethod(); ///object
   DatabaseMethods databaseMethods = DatabaseMethods();
   signMeUp(){
@@ -32,6 +32,7 @@ class _SignupState extends State<Signup> {
       setState(() {
         showSpinner = true;
       });
+
       ///registering a user to firebase auth
       authMethod.registration(emailController.text, passwordController.text)
           .then((value) => print(value));
@@ -42,13 +43,22 @@ class _SignupState extends State<Signup> {
         "email": emailController.text,
       };
 
+      ///saves the value to shared preferences
+      HelperFunction.saveUserName(userNameController.text);
+      HelperFunction.saveUserEmail(emailController.text);
+
       ///sending userinfo to the firebase storage
       databaseMethods.uploadUserInfo(userInfoMap); ///accepts a Map
+
+      ///when data uploaded, it saves the logged-in info tp shared preferences
+      HelperFunction.saveUserLoggedIn(true);
+
+
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           backgroundColor: Color(0xFF2A6971),
           content: Text('Registered Successfully! Kindly Login.',
             style: TextStyle(color: Colors.white, fontSize: 18),)));
-      Navigator.pushNamed(context, HomePage.id);
+      Navigator.pushNamed(context, LoginPage.id);
     }
   }
 

@@ -1,15 +1,11 @@
-import 'package:appchat/Widgets/drawerItems_widget.dart';
-import 'package:appchat/Widgets/peopleContainer_widget.dart';
-import 'package:appchat/models/msg_model.dart';
-import 'package:appchat/models/onlinePeoples_mmodel.dart';
 import 'package:appchat/screens/login_screen.dart';
-import 'package:appchat/screens/messages_screen.dart';
 import 'package:appchat/screens/search_screen.dart';
 import 'package:appchat/services/auth.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:appchat/services/helper.dart';
 import 'package:flutter/material.dart';
 
-import 'chat_screen.dart';
+import '../constants.dart';
+
 
 class HomePage extends StatefulWidget {
 static String id = 'home_page';
@@ -18,32 +14,17 @@ static String id = 'home_page';
 }
 
 class _HomePageState extends State<HomePage> {
-  final _auth = FirebaseAuth.instance;
-  late User loggedInUser;
   AuthMethod authMethod = AuthMethod();
 
+  getUserInfo() async {
+    Constants.myName =  await HelperFunction.getUserName();
+  }
 
-
-@override
+  @override
   void initState() {
+    getUserInfo();
     super.initState();
-    getCurrentUser();
   }
-
-
-  void getCurrentUser() async {
-    try {
-      final user = _auth.currentUser;
-      if (user != null) {
-        loggedInUser = user;
-        print(loggedInUser.email);
-
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
 
   @override
   Widget build(BuildContext context) {
