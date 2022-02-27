@@ -1,6 +1,4 @@
 import 'package:appchat/constants.dart';
-import 'package:appchat/screens/friend_list_page.dart';
-import 'package:appchat/screens/messages_screen.dart';
 import 'package:appchat/screens/welcome_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -42,12 +40,6 @@ class _buildDrawerState extends State<buildDrawer> {
               )
           ),
           DrawerItems(title: 'Profile', onTap: (){}, icon: Icons.person,),
-          DrawerItems(title: 'Friends', onTap: (){
-            Navigator.pushNamed(context, FriendList.id);
-          }, icon: FontAwesomeIcons.userFriends,),
-          DrawerItems(title: 'Messages', onTap: (){
-            Navigator.pushNamed(context, MsgPage.id);
-          }, icon: Icons.message,),
           DrawerItems(title: 'Request', onTap: (){}, icon: FontAwesomeIcons.userPlus,),
           DrawerItems(title: 'Block List', onTap: (){}, icon: Icons.block,),
           DrawerItems(title: 'Settings', onTap: (){}, icon: Icons.settings,),

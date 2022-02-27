@@ -1,5 +1,6 @@
+
 import 'package:appchat/constants.dart';
-import 'package:appchat/models/onlinePeoples_mmodel.dart';
+import 'package:appchat/services/database.dart';
 import 'package:appchat/services/helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,18 +14,34 @@ class ChatPage extends StatefulWidget {
 
   //    OnlinePeoples? user;
   // ChatPage({this.user,});
+  final String chatRoomId;
+  ChatPage(this.chatRoomId);
+
 
   @override
   _ChatPageState createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-  TextEditingController _editingController = TextEditingController();
+  TextEditingController msgController = TextEditingController();
+  DatabaseMethods databaseMethods = DatabaseMethods();
+
+sendMsg(){
+  if(!msgController.text.isNotEmpty){
+    Map<String, String> msgMap =
+    {
+      "message": msgController.text,
+      "sender": Constants.myName,
+    };
+  databaseMethods.getConversationMsg(widget.chatRoomId, msgMap);
+  }
+
+}
 
 
 
   clearText() {
-    _editingController.clear();
+    msgController.clear();
   }
 
   @override
@@ -36,7 +53,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat'),
+        title: Text("chat"),
         backgroundColor: Theme.of(context).primaryColor.withOpacity(0.9),
         actions: [
           Icon(
@@ -50,7 +67,7 @@ class _ChatPageState extends State<ChatPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            MyMsgsStream(),
+
             Container(
               padding: EdgeInsets.symmetric(horizontal: 8.0),
               height: 60.0,
@@ -74,7 +91,7 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                   Expanded(
                       child: TextField(
-                    controller: _editingController,
+                    controller: msgController,
                     // onChanged: (value) {
                     //   mesgText = value;
                     // },
@@ -89,6 +106,7 @@ class _ChatPageState extends State<ChatPage> {
                   IconButton(
                     onPressed: () {
                       setState(() {
+                        sendMsg();
                         clearText();
                       });
                     },

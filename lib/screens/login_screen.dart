@@ -45,16 +45,16 @@ class _LoginPageState extends State<LoginPage> {
         showSpinner = true;
       });
 
-
       ///saves the value to shared preferences
       HelperFunction.saveUserEmail(emailController.text);
-
 
       ///sending userinfo to the firebase storage
       databaseMethods.getUsersByEmail(emailController.text).then((value){
         userInfoSnapshot = value;
         ///saving that offline in the shared preferences
+
         HelperFunction.saveUserEmail(userInfoSnapshot?.docs[0].data()['name']);
+        print("check user : ${userInfoSnapshot?.docs[0].data()['name']}");
       }); ///accepts a Map
 
       ///LOGGING USER IN

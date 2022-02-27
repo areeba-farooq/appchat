@@ -27,5 +27,15 @@ class DatabaseMethods{
         .doc(chatRoomId).set(chatRoomMap).catchError((e)=> print(e));
 }
 
+///add chat msgs, sender name with chat room id
+getConversationMsg(String chatRoomId, msgMap){
+    FirebaseFirestore.instance.collection("chatRooms")
+        .doc(chatRoomId)
+        .collection("chats")
+        .add(msgMap)
+        .catchError((e){print(e.toString());});
+}
+
+
 
 }
