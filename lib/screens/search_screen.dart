@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class SearchPage extends StatefulWidget {
-  static String id = 'search_screen';
+
 
   const SearchPage({Key? key}) : super(key: key);
 
@@ -58,7 +58,7 @@ class _SearchPageState extends State<SearchPage> {
         "chatroomid": chatRoomID
       };
       databaseMethods.createChatRoom(chatRoomID, chatRoomMap);
-      Navigator.pushNamed(context, ChatPage.id);
+      Navigator.push(context, MaterialPageRoute(builder: (context)=> ChatPage(chatRoomID)));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

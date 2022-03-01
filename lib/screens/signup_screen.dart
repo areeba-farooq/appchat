@@ -6,11 +6,11 @@ import 'package:appchat/services/database.dart';
 import 'package:appchat/services/helper.dart';
 import 'package:flutter/material.dart';
 import '../constants.dart';
-import 'home_screen.dart';
+
 
 
 class Signup extends StatefulWidget {
-  static String id = 'signup';
+
 
   @override
   _SignupState createState() => _SignupState();
@@ -58,7 +58,7 @@ class _SignupState extends State<Signup> {
           backgroundColor: Color(0xFF2A6971),
           content: Text('Registered Successfully! Kindly Login.',
             style: TextStyle(color: Colors.white, fontSize: 18),)));
-      Navigator.pushNamed(context, LoginPage.id);
+      Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage()));
     }
   }
 
@@ -203,7 +203,7 @@ class _SignupState extends State<Signup> {
               BottomText(
                   title: 'Already have an account?',
                   onPress: () {
-                    Navigator.pushNamed(context, LoginPage.id);
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage()));
                   },
                   text: 'Login')
             ],

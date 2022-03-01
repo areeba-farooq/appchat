@@ -8,7 +8,7 @@ import '../constants.dart';
 
 
 class HomePage extends StatefulWidget {
-static String id = 'home_page';
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
           IconButton(
               onPressed: (){
                 authMethod.signOut();
-                Navigator.pushReplacementNamed(context, LoginPage.id);
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> LoginPage()));
               },
               icon: Icon(Icons.logout, color: Colors.white,)),
           IconButton(

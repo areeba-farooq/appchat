@@ -52,16 +52,7 @@ class _AppChatState extends State<AppChat> {
         accentColor: Color(0xFF2A6971)
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: userIsLoggedIn ? HomePage.id :
-      LoginPage.id,
-      routes: {
-        WelcomePage.id: (context) => WelcomePage(),
-        LoginPage.id: (context) => LoginPage(),
-        Signup.id: (context) => Signup(),
-        HomePage.id: (context) => HomePage(),
-        SearchPage.id: (context)=> SearchPage(),
-         ChatPage.id: (context) => ChatPage("smg56"),
-      }
+      home: userIsLoggedIn ? HomePage() : LoginPage(),
     );
   }
 }

@@ -16,7 +16,6 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'chat_screen.dart';
 
 class LoginPage extends StatefulWidget {
-static String id = 'login_page';
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -68,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                   backgroundColor: Color(0xFF2A6971),
                   content: Text('Welcome',
                     style: TextStyle(color: Colors.white, fontSize: 18),)));
-              Navigator.pushNamed(context, HomePage.id);
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage()));
             }
       });
 
@@ -165,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
 
               SizedBox(height: 30.0,),
               BottomText(title: "Don't have an account?",
-                onPress: (){Navigator.pushNamed(context, Signup.id);}, text: 'SignUp',)
+                onPress: (){Navigator.push(context, MaterialPageRoute(builder: (context)=> Signup()));}, text: 'SignUp',)
             ],
           ),
         ),

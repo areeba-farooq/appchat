@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
 class WelcomePage extends StatefulWidget {
-  static String id = 'welcome_page';
   @override
   _WelcomePageState createState() => _WelcomePageState();
 }
@@ -89,10 +88,10 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
               ),
 
             SizedBox(height: 40.0,),
-            Buttons(title: 'Login', onPress: (){Navigator.pushNamed(context, LoginPage.id);},
+            Buttons(title: 'Login', onPress: (){Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage()));},
               color: Theme.of(context).primaryColor, style:  kWelcomeButtons,),
             Buttons(color: Theme.of(context).accentColor, onPress: (){
-              Navigator.pushNamed(context, Signup.id);
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> Signup()));
             }, title: 'Signup', style: kWelcomeButtons,),
           ],
         ),
