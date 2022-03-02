@@ -27,7 +27,7 @@ class DatabaseMethods{
         .doc(chatRoomId).set(chatRoomMap).catchError((e)=> print(e));
 }
 
-getConvoMsgs(String chatRoomId, msgMap){
+addConvoMsgs(String chatRoomId, msgMap)  {
     FirebaseFirestore.instance.collection("chatRooms")
         .doc(chatRoomId)
         .collection("chats")
@@ -35,6 +35,13 @@ getConvoMsgs(String chatRoomId, msgMap){
         .catchError((e){print(e.toString());});
 
 }
+  getConvoMsgs(String chatRoomId) async {
+     return await FirebaseFirestore.instance.collection("chatRooms")
+        .doc(chatRoomId)
+        .collection("chats")
+        .snapshots();
+
+  }
 
 
 
