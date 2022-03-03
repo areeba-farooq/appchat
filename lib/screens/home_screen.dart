@@ -1,10 +1,12 @@
 import 'package:appchat/screens/login_screen.dart';
 import 'package:appchat/screens/search_screen.dart';
 import 'package:appchat/services/auth.dart';
+import 'package:appchat/services/database.dart';
 import 'package:appchat/services/helper.dart';
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
+import 'chat_screen.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -15,15 +17,54 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   AuthMethod authMethod = AuthMethod();
+  DatabaseMethods databaseMethods = DatabaseMethods();
+  Stream? chatRoomAppears;
 
-  getUserInfo() async {
-    Constants.myName =  await HelperFunction.getUserName();
+
+  Widget chatRoomList(){
+    return StreamBuilder(
+      stream: chatRoomAppears,
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+                child: Text(
+                  'Something went wrong!',
+                  style: TextStyle(fontSize: 25),
+                ));
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if(snapshot.hasData){
+            return chatRoomAppears != null ? ListView.builder(
+              shrinkWrap: true,
+              itemCount: snapshot.data!.size,
+                itemBuilder: (context, index) {
+                return ChatRoomTile(userName: snapshot.data.docs[index]["chatroomid"].toString().replaceAll("_", "")
+                    .replaceAll(Constants.myName, ""),
+                  chatRoomID: snapshot.data.docs[index]["chatroomid"],
+                );
+
+            }): Container();
+          }
+      return Container();
+    });
   }
 
   @override
   void initState() {
     getUserInfo();
     super.initState();
+  }
+  getUserInfo() async {
+    Constants.myName =  await HelperFunction.getUserName(); ///once we get this value then
+    databaseMethods.getChatRooms(Constants.myName).
+    then((value){
+      setState(() {
+        chatRoomAppears = value;
+      });
+    });
   }
 
   @override
@@ -63,21 +104,49 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Center(
-            child: Text( "You Don't have any friends yet", style: TextStyle(
-                color: Colors.black54,
-                fontSize: 20.0
-            ),),
-          ),
+          // Center(
+          //   child: Text( "You Don't have any friends yet", style: TextStyle(
+          //       color: Colors.black54,
+          //       fontSize: 20.0
+          //   ),),
+          // ),
+          chatRoomList()
 
         ],
       ),
     );
   }
 }
+
+class ChatRoomTile extends StatelessWidget {
+  const ChatRoomTile({Key? key, required this.userName, required this.chatRoomID}) : super(key: key);
+  final String userName;
+  final String chatRoomID;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white30,
+      child: ListTile(
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=> ChatPage(chatRoomID)));
+        },
+        leading: Container(
+          height: 40,
+          width: 40,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Color(0xFF2A6971),
+            borderRadius: BorderRadius.circular(30)
+          ),
+            child: Text("${userName.substring(0,1). toUpperCase()}", style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),)),
+        title: Text(userName, style: TextStyle(color: Color(0xFF2A6971), fontSize: 20),),
+      ),
+    );
+  }
+}
+
 
 
 

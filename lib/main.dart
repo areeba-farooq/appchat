@@ -52,7 +52,8 @@ class _AppChatState extends State<AppChat> {
         accentColor: Color(0xFF2A6971)
       ),
       debugShowCheckedModeBanner: false,
-      home: userIsLoggedIn ? HomePage() : LoginPage(),
+      home: Signup(),
+      // home: userIsLoggedIn ? HomePage() : LoginPage(),
     );
   }
 }

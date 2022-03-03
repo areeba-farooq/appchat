@@ -36,49 +36,49 @@ class _ChatPageState extends State<ChatPage> {
               child: CircularProgressIndicator(),
             );
           }
-          // if(snapshot.hasData){
-          //   return ListView.builder(
-          //     shrinkWrap: true,
-          //     itemCount:  snapshot.data!.size,
-          //       itemBuilder: (context, i){
-          //       return MsgTile(message: snapshot.data?.docs[i]['message']);
-          //
-          //   });
-          // }
+          if(snapshot.hasData){
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount:  snapshot.data!.size,
+                itemBuilder: (context, i){
+                return MsgTile(message: snapshot.data?.docs[i]['message'],
+                isSenderMe: snapshot.data?.docs[i]["sender"] == Constants.myName, sender: snapshot.data?.docs[i]["sender"],);
+
+            });
+          }
 
           ///************************************************
-          if (snapshot.hasData) {
-            List<MesgBubble> msgList = [];
-            snapshot.data!.docs.reversed.map((doc) {
-              final msgText = (doc.data() as Map<String, dynamic>)["message"];
-
-              ///got the user who send msgs
-              final msgSender = (doc.data() as Map<String, dynamic>)['sender'];
-
-              ///got the user who currently logged in
-              User? loggedInUser;
-              final currentUser = loggedInUser?.email;
-              if (currentUser == msgSender) {
-//MSG from the logged in user
-              }
-              final msgBubble = MesgBubble(
-                text: msgText,
-                sender: msgSender,
-                isMe: currentUser == msgSender,
-              );
-              msgList.add(msgBubble);
-            }).toList();
-
-            return chatMsgs != null
-                ? Expanded(
-                    child: ListView(
-                    reverse: true,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10.0, vertical: 20.0),
-                    children: msgList,
-                  ))
-                : Container();
-          }
+//           if (snapshot.hasData) {
+//             List<MesgBubble> msgList = [];
+//             snapshot.data!.docs.map((doc) {
+//               final msgText = (doc.data() as Map<String, dynamic>)["message"];
+//
+//               ///got the user who send msgs
+//               final msgSender = (doc.data() as Map<String, dynamic>)['sender'];
+//
+//               ///got the user who currently logged in
+//               User? loggedInUser;
+//               final currentUser = loggedInUser?.email;
+// //               if (currentUser == msgSender) {
+// // //MSG from the logged in user
+// //
+// //               }
+//               final msgBubble = MesgBubble(
+//                 text: msgText,
+//                 sender: msgSender,
+//                 isMe: currentUser == msgSender,
+//               );
+//               msgList.add(msgBubble);
+//             }).toList();
+//
+//             return chatMsgs != null
+//                 ? Expanded(
+//                     child: ListView(
+//
+//                     children: msgList,
+//                   ))
+//                 : Container();
+//           }
 
           return Container();
         });
@@ -86,9 +86,10 @@ class _ChatPageState extends State<ChatPage> {
 
   sendMsg() {
     if (msgController.text.isNotEmpty) {
-      Map<String, String> msgMap = {
+      Map<String, dynamic> msgMap = {
         "message": msgController.text,
-        "sender": Constants.myName
+        "sender": Constants.myName,
+        "time" : DateTime.now().millisecondsSinceEpoch
       };
       databaseMethods.addConvoMsgs(widget.chatRoomId, msgMap);
     }
@@ -288,17 +289,47 @@ class MesgBubble extends StatelessWidget {
 }
 
 class MsgTile extends StatelessWidget {
-  MsgTile({Key? key, required this.message}) : super(key: key);
+  MsgTile({Key? key, required this.message, required this.sender, required this.isSenderMe}) : super(key: key);
   String message;
+  String sender;
+  bool isSenderMe;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text(
-        message,
-        style: TextStyle(color: Colors.blue),
-      ),
-    );
+    return Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment:
+          isSenderMe ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+          children: [
+            Text(
+              sender,
+              style: TextStyle(fontSize: 12, color: Colors.black54),
+            ),
+            Material(
+                borderRadius: isSenderMe
+                    ? BorderRadius.only(
+                    topRight: Radius.circular(30),
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30))
+                    : BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30)),
+                elevation: 5.0,
+                color: isSenderMe ? Colors.white : Color(0xFF2A6971),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 10),
+                  child: Text(
+                    message,
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: isSenderMe ? Colors.black87 : Colors.white),
+                  ),
+                )),
+          ],
+        ));
   }
 }
 
